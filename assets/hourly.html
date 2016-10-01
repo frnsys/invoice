@@ -1,0 +1,29 @@
+{% extends 'template.html' %}
+
+{% block meta %}
+<h3>for <em>{{ client }}'s {{ project }}</em> on <em>{{ date }} </em> at a rate of <em>${{ rate }}/hr.</em></h3>
+{% endblock %}
+
+
+{% block services %}
+<table>
+    <tr>
+        <th>Service</th>
+        <th>Hours</th>
+        <th>Amount</th>
+    </tr>
+    {% for service in services %}
+        <tr>
+            <td>{{ service.name }}</td>
+            <td>{{ '%0.1f' | format(service.hours|float) }}</td>
+            <td>${{ '%0.2f' | format(service.hours * rate) }}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td>Due</td>
+        <td>{{ '%0.1f' | format(hours|float) }}</td>
+        <td>${{ '%0.2f' | format(hours * rate) }}</td>
+    </tr>
+</table>
+{% endblock %}
+

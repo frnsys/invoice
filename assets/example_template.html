@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>~ invoice #{{ id }}</title>
+  <link rel="stylesheet" type="text/css" href="../assets/style.css" media="screen">
+</head>
+
+<body>
+  <main role="main">
+    <header>
+        <img src="../assets/publicscience.svg" class="logo">
+        <div class="branding">
+            <h1>company</h1>
+            <h4>me me me</h4>
+        </div>
+    </header>
+    <div class="meta">
+        <h2>Invoice <em>#{{ id }}</em></h2>
+        {% block meta %}
+        {% endblock %}
+    </div>
+    <div class="services">
+        {% block services %}
+        {% endblock %}
+    </div>
+    <footer>
+        <div>
+            <p>Please remit payment within 30 days by check, mailed to the order of:</p>
+            <ul class="address">
+                <li>my company</li>
+                <li>my address</li>
+                <li>my address cont'd</li>
+            </ul>
+        </div>
+        <div>
+            <ul>
+                <li>If you have any questions or comments, please email me at <em>my email</em>.</li>
+                <li class="tin">TIN: my-tax-id</li>
+            </ul>
+        </div>
+    </footer>
+  </main>
+</body>
+</html>

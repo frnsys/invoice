@@ -1,0 +1,139 @@
+#!/usr/bin/python3
+
+import os
+import re
+import yaml
+import click
+import subprocess
+from datetime import datetime
+from jinja2 import Environment, FileSystemLoader
+
+
+@click.group()
+def main():
+    pass
+
+
+@main.command()
+@click.option('-f', '--flat', is_flag=True, help='flat rate')
+def new(flat):
+    with open('invoices.yml', 'r') as f:
+        data = yaml.load(f) or {}
+
+    # input
+    if not flat:
+        input = {
+            'client': '',
+            'project': '',
+            'rate': 0,
+            'services': [{'name': '', 'hours': 0}]
+        }
+    else:
+        input = {
+            'client': '',
+            'project': '',
+            'rate': 0,
+            'services': [{'name': ''}]
+        }
+
+    raw_input = click.edit(yaml.dump(input, default_flow_style=False))
+    if raw_input is None:
+        return
+    input = yaml.load(raw_input)
+
+    client = input['client']
+    project = input['project']
+
+    # build 3-letter initial for client
+    parts = re.split('\W+', client)
+    if len(parts) < 2:
+        initials = client[:3].upper()
+    elif len(parts) < 3:
+        initials = ''.join([parts[0][0], parts[1][:2]]).upper()
+    else:
+        initials = ''.join([p[0] for p in parts[:3]]).upper()
+
+    # compute the project number for this client
+    past_projects = data.get(client, {})
+    project_num = str(len(past_projects) + 1).zfill(3)
+
+    # date
+    today = datetime.today()
+    date = today.strftime('%B %d, %Y') # Month 00, 0000
+
+    # build id for project
+    id = '{}-{}-{}'.format(
+        today.strftime('%d%m%y'),
+        initials,
+        project_num
+    )
+
+    project = {
+        'date': date,
+        'project': project,
+        'rate': input['rate'],
+        'services': input['services']
+    }
+    if not flat:
+        project['total_hours'] = sum(s['hours'] for s in project['services'])
+
+    if client not in data:
+        data[client] = {}
+    data[client][id] = project
+
+    pdfname = render_invoice(id, client, data[client][id])
+
+    with open('invoices.yml', 'w') as f:
+        f.write(yaml.dump(data, default_flow_style=False))
+
+    print(pdfname)
+
+
+@main.command()
+def regen():
+    """regenerate invoices"""
+    with open('invoices.yml', 'r') as f:
+        data = yaml.load(f) or {}
+
+    for file in os.listdir('invoices'):
+        os.remove(os.path.join('invoices', file))
+
+    for client, projects in data.items():
+        for id, data in projects.items():
+            render_invoice(id, client, data)
+
+
+def render_invoice(id, client, data):
+    if 'hours' in data['services'][0]:
+        tmpl_file = 'hourly.html'
+    else:
+        tmpl_file = 'flat.html'
+
+    dir = os.path.dirname(os.path.abspath(__file__))
+    templ_dir = os.path.join(dir, 'assets')
+    env = Environment()
+    env.loader = FileSystemLoader(templ_dir)
+    tmpl = env.get_template(tmpl_file)
+    html = tmpl.render(id=id, client=client, **data)
+
+    fname = 'invoices/{}.html'.format(id)
+    pdfname = 'invoices/{}.pdf'.format(id)
+    with open(fname, 'w') as f:
+        f.write(html)
+
+    subprocess.call([
+        'wkhtmltopdf',
+        '-q',       # quiet
+        '-T', '2',  # top margin
+        '-L', '0',  # left margin
+        '-R', '0',  # right margin
+        '--zoom', '0.8',
+        fname,
+        pdfname
+    ])
+
+    return pdfname
+
+
+if __name__ == '__main__':
+    main()

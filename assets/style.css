@@ -1,0 +1,95 @@
+html, body {
+    padding: 2em;
+    font-family: 'Calibre';
+    color: #222;
+}
+main {
+    max-width: 920px;
+    margin: 0 auto;
+}
+.logo {
+    width: 180px;
+    float: left;
+}
+header {
+    overflow: hidden;
+}
+.branding {
+    float: left;
+    padding: 0 0 0 2em;
+}
+h1 {
+    font-size: 6em;
+    margin: 1em 0 0.4em 0;
+    line-height: 0;
+}
+h4 {
+    font-weight: normal;
+    color: #777;
+}
+li {
+    list-style-type: none;
+}
+.services {
+    margin: 1em 0 4em 0;
+}
+table {
+    width: 100%;
+    font-size: 1.4em;
+}
+th, td {
+    text-align: left;
+    padding: 0.5em 0.5em 0.25em 0.5em;
+}
+th:first-child, td:first-child {
+    width: 70%;
+}
+th:last-child, td:last-child {
+    text-align: right;
+}
+tr:nth-child(even) {
+    background: #eee;
+}
+tr:last-child {
+    color: #fff;
+    background: blue;
+}
+footer > div:first-child {
+    float: left;
+    width: 50%;
+}
+footer > div:last-child {
+    float: right;
+    text-align: right;
+    width: 50%;
+}
+.tin {
+    margin: 1em 0 0 0;
+    padding: 0.5em 0.5em 0.25em 0.5em;
+    border: 2px solid #aaa;
+    color: #888;
+    display: inline-block;
+}
+.meta {
+    clear: both;
+    margin: 4em 0 0 0;
+    padding: 1em;
+}
+.meta em {
+    font-weight: 200;
+    color: #222;
+}
+.meta h2 {
+    margin: 0;
+}
+.meta h3 {
+    font-size: 2em;
+    font-weight: 200;
+    color: #888;
+    margin: 0.4em 0;
+    line-height: 1.6;
+}
+.meta h3 em {
+    margin: 0 0.3em;
+    border-bottom: 2px solid #222;
+}

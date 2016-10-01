@@ -1,0 +1,22 @@
+{% extends 'template.html' %}
+
+{% block meta %}
+<h3>for <em>{{ client }}'s {{ project }}</em> on <em>{{ date }} </em> for <em>${{ rate }}.</em></h3>
+{% endblock %}
+
+{% block services %}
+<table>
+    <tr>
+        <th>Service</th>
+    </tr>
+    {% for service in services %}
+        <tr>
+            <td>{{ service.name }}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td>${{ '%0.2f' | format(rate) }}</td>
+    </tr>
+</table>
+{% endblock %}
+
